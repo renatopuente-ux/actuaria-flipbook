@@ -1,0 +1,6 @@
+[2026-09-29T16:17:13.448Z] [log] Warning: TT: undefined function: 32
+[2026-09-29T16:17:17.183Z] [warning] [flipbook] Error: PDFWorker.fromPort - the worker is being destroyed.
+Please remember to await `PDFDocumentLoadingTask.destroy()`-calls.
+    at PDFWorker.fromPort (blob:https://actuaweb.webflow.io/fb75492f-9fde-46b4-bfa0-4b5fda19513c:21:198814)
+    at Module.getDocument (blob:https://actuaweb.webflow.io/fb75492f-9fde-46b4-bfa0-4b5fda19513c:21:182110)
+    at https://renatopuente-ux.github.io/actuaria-flipbook/flipbook.js:249:25

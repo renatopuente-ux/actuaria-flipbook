@@ -1,5 +1,5 @@
 /*!
- * Actuaria Flipbook 1.0.0 — visor de PDF con efecto de hoja para Actuaweb.
+ * Actuaria Flipbook 1.0.1 — visor de PDF con efecto de hoja para Actuaweb.
  * Usa PDF.js 4.10.38 (Apache-2.0, Mozilla) y StPageFlip 2.0.7 (MIT, Oleg Litovski), auto-hospedados
  * junto a este archivo y verificados por hash antes de ejecutarse.
  *
@@ -115,9 +115,10 @@
       })
     ]).then(function (r) {
       var pdfjs = r[0];
-      // The worker lives on another origin, so it is started from a same-origin Blob URL.
-      pdfjs.GlobalWorkerOptions.workerPort = new Worker(r[1], { type: 'module' });
-      return { pdfjs: pdfjs, St: r[2] };
+      // The worker lives on another origin, so it is started from a same-origin Blob URL. It is
+      // passed explicitly to every document: destroying a document then leaves it alive.
+      var port = new Worker(r[1], { type: 'module' });
+      return { pdfjs: pdfjs, St: r[2], worker: new pdfjs.PDFWorker({ port: port }) };
     });
     libsPromise.catch(function () { libsPromise = null; });
     return libsPromise;
@@ -248,6 +249,7 @@
       self.libs = libs;
       return libs.pdfjs.getDocument({
         url: self.url,
+        worker: libs.worker,
         isEvalSupported: false,
         withCredentials: false,
         // cmaps are not shipped: they only matter for CJK text with non-embedded fonts.
@@ -289,10 +291,10 @@
     var pageW = Math.floor(Math.min(two ? W / 2 : W, H * this.ratio));
     var pageH = Math.floor(pageW / this.ratio);
 
-    if (this.flip) { this.current = this.flip.getCurrentPageIndex(); this.flip.destroy(); this.flip = null; }
+    if (this.flip) this.current = this.flip.getCurrentPageIndex();
+    this.destroyFlip();
     // Set before creating page-flip: it fires events during loadFromHTML that schedule renders.
     this.pageW = pageW;
-    this.bookEl.innerHTML = '';
     this.bookEl.style.width = (two ? pageW * 2 : pageW) + 'px';
     this.bookEl.style.height = pageH + 'px';
 
@@ -419,10 +421,17 @@
     })(i);
   };
 
+  // page-flip's destroy() removes the element it was mounted on, so a fresh one replaces it.
+  Book.prototype.destroyFlip = function () {
+    if (this.flip) { this.flip.destroy(); this.flip = null; }
+    if (this.bookEl.parentNode) this.bookEl.remove();
+    this.bookEl = el('div', 'afb_book');
+    this.stage.insertBefore(this.bookEl, this.stage.firstChild);
+  };
+
   Book.prototype.teardown = function () {
     if (!this.zoomEl.hidden) this.toggleZoom();
-    if (this.flip) { this.flip.destroy(); this.flip = null; }
-    this.bookEl.innerHTML = '';
+    this.destroyFlip();
     this.pages.forEach(function (p) { if (p.url) URL.revokeObjectURL(p.url); });
     this.pages = [];
     this.current = 0;
@@ -540,6 +549,6 @@
     openModal(a.href, { title: a.getAttribute('data-flipbook-title') || (a.textContent || '').replace(/\s+/g, ' ').trim() || null });
   });
 
-  window.ActuariaFlipbook = { open: openModal, close: closeModal, mount: mount, version: '1.0.0' };
+  window.ActuariaFlipbook = { open: openModal, close: closeModal, mount: mount, version: '1.0.1' };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountAll); else mountAll();
 })();
