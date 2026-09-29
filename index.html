@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actuaria Flipbook — demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  :root { --navy: #151f47; --indigo: #4c64d9; --surface: #f3f6fc; }
+  body { margin: 0; background: var(--surface); color: var(--navy); font-family: Nunito, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 48px 16px 80px; }
+  h1 { font-size: 40px; line-height: 1.1; margin: 0 0 12px; }
+  h2 { margin: 48px 0 12px; }
+  p { font-size: 18px; line-height: 1.5; max-width: 720px; }
+  code { background: #e8ecf4; padding: 2px 6px; border-radius: 6px; font-size: 15px; }
+  ul { font-size: 18px; line-height: 1.9; }
+  a { color: var(--indigo); font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Actuaria Flipbook</h1>
+  <p>Visor de PDF con efecto de hoja para Actuaweb. Cualquier enlace a un <code>.pdf</code> abre la
+  ventana emergente; los bloques con <code>data-flipbook-inline</code> muestran el libro en la página.</p>
+
+  <h2>Enlaces normales a PDF (ventana emergente)</h2>
+  <ul>
+    <li><a href="https://cdn.prod.website-files.com/6967c96e0fba2ea4f94d3c69/6abbd8aa0edd86917a7ffd3c_coeficientes-jp-am99-2025.pdf">Coeficientes 2025</a></li>
+    <li><a href="https://cdn.prod.website-files.com/6967c96e0fba2ea4f94d3c69/6abbd8a91ce202a27c766d58_coeficientes-jp-am99-2018.pdf" data-flipbook-title="Coeficientes de renta vitalicia 2018">Coeficientes 2018 (4 páginas)</a></li>
+    <li><a href="https://cdn.prod.website-files.com/6967c96e0fba2ea4f94d3c69/6abbd8aa0edd86917a7ffd3c_coeficientes-jp-am99-2025.pdf" data-flipbook="off" target="_blank">Excluido: abre el PDF normal</a></li>
+  </ul>
+
+  <h2>Incrustado</h2>
+  <div data-flipbook-inline data-src="https://cdn.prod.website-files.com/6967c96e0fba2ea4f94d3c69/6abbd8a91ce202a27c766d58_coeficientes-jp-am99-2018.pdf" data-title="Coeficientes 2018"></div>
+</main>
+<script src="flipbook.js"></script>
+</body>
+</html>
